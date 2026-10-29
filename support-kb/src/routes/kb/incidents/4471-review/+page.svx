@@ -1,0 +1,84 @@
+---
+layout: runbook
+title: '#4471 review · two causes behind the merged date reports'
+owner: level44
+status: reviewed
+reviewed: '2026-10-29'
+signature: 'level44 · MEGA S01E03 · 2026-10-29'
+---
+
+<script>
+  import IncidentReview from '#lib/kb/IncidentReview.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import DedupeExplorer from '#lib/kb/DedupeExplorer.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+The [original #4471 page](/kb/incidents/4471) calls this one known parser issue with one fix queued.
+Its rendered evidence shows two causes. Keep their tickets and fixes separate. This review uses the
+2026-10-04 KB export; the review date does not mean the live support queue was refreshed.
+
+## What the evidence supports
+
+<IncidentReview />
+
+## Different mechanisms, different fixes
+
+**Shared parser:** day-first tenants supply day/month dates, but the shared parser reads month first.
+For example, harbour.dental's app report `R-41200` describes 7 April becoming 4 July;
+lantern.row's `R-41203` describes 2 December becoming 12 February. Fix the shared parsing contract
+and verify the tenant's intended date survives. See [parser ticket](https://github.com/level44/mega.dev.challenge/issues/1).
+
+**Form hint:** booking-v3 displays `MM/DD/YYYY`, while its day-first form reads input in the tenant's order.
+Following the hint makes the user enter month/day and the form interprets day/month. This affects
+form reports from alder.physio, copper.studio and pale.harbour. `R-41230`, `R-41241` and `R-41251`
+are examples. Align the displayed hint with the actual form contract; a shared-parser fix alone does
+not establish this is repaired. See [form-hint ticket](https://github.com/level44/mega.dev.challenge/issues/2).
+
+These are mechanisms described by the exported executable model, not a reproduction against the
+production product. The individual one-day-like reports remain explicitly uncertain above.
+
+## What the timeline actually measures
+
+<QueueTimeline ticket={4471} />
+
+The received and merged series answer different questions. Read them separately before attributing
+a change in support activity to a release, the onset of a bug or a successful fix. No deployment or
+recovery evidence is included in this export.
+
+## Replace subject-only triage with evidence of the same cause
+
+The [triage runbook](/kb/triage/dedupe) still instructs the desk to merge on normalized subjects and
+merge when unsure. Its old review date triggers the layout's stale warning. An accepted label does
+not make it current or make its advice agree with the running examples.
+
+<DedupeExplorer />
+
+Try alder.physio with the same subject on both sides: form versus app yields different causes.
+Change the app side to form and the cause agrees. Conversely, kettle.books app and email can share
+a cause despite different subjects. Two unknown tenants do not establish a shared cause either.
+Tenant, form and channel matter; subject, browser locale and intake tag are insufficient.
+
+**Proposed replacement rule:** read the report and establish its tenant and relevant input path.
+Merge only when the evidence supports the same underlying cause; different wording or channels do
+not by themselves prevent a merge. Keep different causes separate. With an unknown tenant or an
+unexplained symptom, investigate instead of automatically merging.
+
+[Decision 0001](/kb/decisions/0001-dedupe-by-subject) remains unchanged as an accepted historical
+record. This review proposes replacing its operational rule; it does not claim the original deciders
+have accepted a new decision. Record a new decision if that proposal is accepted.
+
+## Sources and ongoing review
+
+- `src/lib/data/reports-4471.json` and `src/lib/data/desk-notes.json`: report IDs, timestamps and flagged symptoms.
+- `src/lib/data/tenants/*.json` and `src/lib/kb/locales.ts`: tenant locale and booking-form version, not browser guesses.
+- `src/lib/kb/causes.ts`: `uniqueById`, `dayFirst`, `causeOf` and `groupByCause` used by the computed table.
+- `src/lib/kb/CauseTable.svelte`, `QueueTimeline.svelte`, `DedupeExplorer.svelte` and `dedupe-cases.ts`: executable evidence contradicting the one-cause and subject-only claims.
+- `src/lib/kb/staleness.ts` and `src/lib/layouts/runbook.svelte`: stale review-date warning.
+
+The desk continues working. Before closing either ticket or relying on these snapshot counts,
+obtain its latest report and tenant exports, deduplicate again, inspect any unplaced reports and
+recompute coverage. Do not present an October export as a live queue. Verify fixes for both paths
+and resolve the flagged symptoms rather than using the known label as evidence of recovery.
+
+<RenderStamp {signature} />
