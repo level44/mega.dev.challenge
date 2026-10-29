@@ -17,6 +17,11 @@ Five one-day-like reports remain counted under parser by the exported model, wit
 their individual mechanism explicitly unresolved. All counts describe the export,
 not today's live queue.
 
+The course accepted both tickets, then disclosed its engineering update: upstream
+#4471 closed 5 October; parser **fixed**, hint **won't fix** because booking-v3 was
+retired. Accordingly, issue #1 is closed as completed and #2 as not planned.
+Both the signed source and rendered page record these distinct outcomes.
+
 The new page follows the existing `.svx` conventions, imports its computed numbers
 from a Svelte component, is automatically discovered by `KbIndex`, and renders its
 frontmatter signature through `RenderStamp`. GitHub's source view does not execute

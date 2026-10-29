@@ -2,7 +2,7 @@
 layout: runbook
 title: '#4471 review · two causes behind the merged date reports'
 owner: level44
-status: reviewed
+status: resolved
 reviewed: '2026-10-29'
 signature: 'level44 · MEGA S01E03 · 2026-10-29'
 ---
@@ -17,6 +17,22 @@ signature: 'level44 · MEGA S01E03 · 2026-10-29'
 The [original #4471 page](/kb/incidents/4471) calls this one known parser issue with one fix queued.
 Its rendered evidence shows two causes. Keep their tickets and fixes separate. This review uses the
 2026-10-04 KB export; the review date does not mean the live support queue was refreshed.
+
+## Engineering outcome · 5 October
+
+After the course accepted the separate tickets, its [engineering update](https://hq.mega.dev/challenges/what-it-shows)
+reported **#4471 closed 05 Oct**:
+
+| Cause | Outcome | Engineering explanation | Our ticket closure |
+| --- | --- | --- | --- |
+| parser | **FIXED** | `fix(dates): parse dd/mm for eu locales` | [Parser ticket](https://github.com/level44/mega.dev.challenge/issues/1): completed |
+| hint | **WON'T FIX** | booking-v3 form retired | [Form-hint ticket](https://github.com/level44/mega.dev.challenge/issues/2): not planned |
+
+The course update, observed on 29 October, is newer evidence than the exported page's queued-fix
+claim. Retiring the form is not a hint fix; these are different outcomes. The historical coverage
+below remains unchanged. The following mechanisms and remediation scope describe the pre-closure
+defects, not outstanding implementation work. We did not implement or independently verify a
+production deployment.
 
 ## What the evidence supports
 
@@ -76,9 +92,9 @@ have accepted a new decision. Record a new decision if that proposal is accepted
 - `src/lib/kb/CauseTable.svelte`, `QueueTimeline.svelte`, `DedupeExplorer.svelte` and `dedupe-cases.ts`: executable evidence contradicting the one-cause and subject-only claims.
 - `src/lib/kb/staleness.ts` and `src/lib/layouts/runbook.svelte`: stale review-date warning.
 
-The desk continues working. Before closing either ticket or relying on these snapshot counts,
+The desk continues working. Before relying on these historical counts for a new incident,
 obtain its latest report and tenant exports, deduplicate again, inspect any unplaced reports and
-recompute coverage. Do not present an October export as a live queue. Verify fixes for both paths
-and resolve the flagged symptoms rather than using the known label as evidence of recovery.
+recompute coverage. Do not present an October export as a live queue or the form retirement as
+a repaired hint. Investigate the flagged symptoms before claiming all individual symptoms recovered.
 
 <RenderStamp {signature} />
